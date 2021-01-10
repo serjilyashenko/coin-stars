@@ -3,21 +3,25 @@ import * as d3 from "d3";
 import { useBYN } from "../Hooks/RateFetch";
 
 export default function Main() {
+  const containerRef = useRef(null);
   const d3Ref = useRef(null);
   const data = useBYN();
 
   useEffect(() => {
-    console.log(">> D3 useEffect", data);
-
     if (!data) {
       return null;
     }
 
-    const height = 800;
-    const width = 600;
-    const margin = { top: 0, right: 40, bottom: 0, left: 40 };
+    const containerElement = containerRef.current;
+    const height = 450;
+    const { width } = containerElement.getBoundingClientRect();
+    const margin = { top: 10, right: 40, bottom: 20, left: 60 };
 
-    const svg = d3.select(d3Ref.current).attr("viewBox", [0, 0, width, height]);
+    const svg = d3
+      .select(d3Ref.current)
+      // .attr("viewBox", [0, 0, width, height]); // To handle resize like SVG
+      .attr("height", height)
+      .attr("width", width);
     svg.selectAll("*").remove();
 
     const x = d3
@@ -27,20 +31,34 @@ export default function Main() {
 
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.value)])
+      .domain([d3.min(data, (d) => d.value), d3.max(data, (d) => d.value)])
       .nice()
       .range([height - margin.bottom, margin.top]);
 
-    // const radius = 2;
-    // svg
-    //   .selectAll("circle")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("cx", (d) => x(d.date))
-    //   .attr("cy", (d) => y(d.value))
-    //   .attr("r", radius)
-    //   .attr("fill", "teal");
+    const getXAxis = (x, width) =>
+      d3
+        .axisBottom(x)
+        .ticks(width / 80)
+        .tickSizeOuter(0);
+    const xAxisElement = svg
+      .append("g")
+      .call(getXAxis(x))
+      .attr("transform", `translate(0, ${height - margin.bottom})`);
+
+    const yAxis = (g) =>
+      g
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y))
+        .call((g) =>
+          g
+            .select(".tick:last-of-type text")
+            .clone()
+            .attr("x", 3)
+            .attr("text-anchor", "start")
+            .attr("font-weight", "bold")
+            .text(data.y)
+        );
+    svg.append("g").call(yAxis);
 
     const line = d3
       .line()
@@ -48,19 +66,34 @@ export default function Main() {
       .x((d) => x(d.date))
       .y((d) => y(d.value));
 
-    svg
+    const pathElement = svg
       .append("path")
       .datum(data)
       .attr("fill", "none")
       .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 1)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
       .attr("d", line);
+
+    const resizeHandler = (entries) => {
+      const { width: w } = entries?.[0]?.contentRect || {};
+      x.range([margin.left, w - margin.right]);
+      pathElement.attr(
+        "d",
+        line.x((d) => x(d.date))
+      );
+      xAxisElement.call(getXAxis(x, w));
+    };
+
+    const resizeObserver = new ResizeObserver(resizeHandler);
+    resizeObserver.observe(containerElement);
+
+    return () => resizeObserver.unobserve(containerElement);
   }, [data]);
 
   return (
-    <div>
+    <div ref={containerRef}>
       <svg ref={d3Ref} />
     </div>
   );
