@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import { format } from "date-fns";
 import { useBYN } from "../Hooks/RateFetch";
 
 export default function Main() {
@@ -15,13 +16,13 @@ export default function Main() {
     const containerElement = containerRef.current;
     const height = 450;
     const { width } = containerElement.getBoundingClientRect();
-    const margin = { top: 10, right: 40, bottom: 20, left: 60 };
+    const margin = { top: 10, right: 60, bottom: 20, left: 60 };
 
     const svg = d3
       .select(d3Ref.current)
       // .attr("viewBox", [0, 0, width, height]); // To handle resize like SVG
       .attr("height", height)
-      .attr("width", width);
+      .attr("width", "100%"); // !!
     svg.selectAll("*").remove();
 
     const x = d3
@@ -76,6 +77,27 @@ export default function Main() {
       .attr("stroke-linecap", "round")
       .attr("d", line);
 
+    const lastDataItem = data[data.length - 1];
+    const isRise = lastDataItem.value >= data[data.length - 2].value;
+    const labelGroup = svg.append("g");
+    labelGroup.append("circle").attr("r", 2).attr("fill", "teal");
+    labelGroup
+      .append("text")
+      .attr("transform", "translate( 4, 11)")
+      .attr("font-size", 12)
+      .attr("fill", isRise ? "green" : "red")
+      .text(() => lastDataItem.value);
+    labelGroup
+      .append("text")
+      .attr("font-size", 12)
+      .attr("transform", "translate( 4, -2)")
+      .attr("opacity", 0.5)
+      .text(() => format(lastDataItem.date, "dd.MM"));
+    labelGroup.attr(
+      "transform",
+      `translate(${x(lastDataItem.date)}, ${y(lastDataItem.value)})`
+    );
+
     const resizeHandler = (entries) => {
       const { width: w } = entries?.[0]?.contentRect || {};
       x.range([margin.left, w - margin.right]);
@@ -84,6 +106,10 @@ export default function Main() {
         line.x((d) => x(d.date))
       );
       xAxisElement.call(getXAxis(x, w));
+      labelGroup.attr(
+        "transform",
+        `translate(${x(lastDataItem.date)}, ${y(lastDataItem.value)})`
+      );
     };
 
     const resizeObserver = new ResizeObserver(resizeHandler);

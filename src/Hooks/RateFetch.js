@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import queryString from "query-string";
+import { subDays, startOfTomorrow } from "date-fns";
 
-const url = `https://www.nbrb.by/API/ExRates/Rates/Dynamics/145?startDate=Sat%2C+11+Jan+2020+21%3A00%3A00+GMT&endDate=Thu%2C+07+Jan+2021+21%3A00%3A00+GMT`; // USD code: 145
+const usdCode = 145;
+const startDate = subDays(startOfTomorrow(), 364).toUTCString(); // API return only ~365 days
+const endDate = startOfTomorrow().toUTCString();
+const url = `https://www.nbrb.by/API/ExRates/Rates/Dynamics/${usdCode}?${queryString.stringify(
+  { startDate, endDate }
+)}`; // USD code: 145
 
 export function useBYN() {
   const [data, setData] = useState(null);
