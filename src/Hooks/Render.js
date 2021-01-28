@@ -11,7 +11,7 @@ export function useRenderLine(containerRef, svgRef, data) {
     const containerElement = containerRef.current;
     const height = 450;
     const { width } = containerElement.getBoundingClientRect();
-    const margin = { top: 10, right: 60, bottom: 20, left: 60 };
+    const margin = { top: 10, right: 100, bottom: 20, left: 60 };
 
     const svg = d3
       .select(svgRef.current)

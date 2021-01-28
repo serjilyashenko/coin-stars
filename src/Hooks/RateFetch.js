@@ -42,6 +42,7 @@ export function useBTC() {
   const startDate = "2017-09-01";
   const endDate = d3.timeFormat("%Y-%m-%d")(new Date());
   const btcURL = `https://api.coindesk.com/v1/bpi/historical/close.json?start=${startDate}&end=${endDate}`;
+  const currentBtcURL = "https://api.coindesk.com/v1/bpi/currentprice.json";
 
   const deserializeBtc = useCallback(
     (response) =>
@@ -52,5 +53,20 @@ export function useBTC() {
     []
   );
 
-  return useCurrencyRequest(btcURL, deserializeBtc);
+  const deserializeLastBtc = useCallback(
+    (response) => ({
+      date: new Date(),
+      value: response?.data?.bpi?.USD?.rate_float,
+    }),
+    []
+  );
+
+  const rates = useCurrencyRequest(btcURL, deserializeBtc);
+  const currentRate = useCurrencyRequest(currentBtcURL, deserializeLastBtc);
+
+  if (!rates || !currentRate) {
+    return null;
+  }
+
+  return [...rates, currentRate];
 }
