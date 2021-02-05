@@ -7,6 +7,12 @@ export default function App() {
         <h1>COIN STARS</h1>
       </header>
       <Main />
+      {/*// Get data (byn + btc), show spinner, error, context*/}
+      {/*<Main>*/}
+      {/*  <NbCalculator />*/}
+      {/*  <BynChart />*/}
+      {/*  <BitcoinChart />*/}
+      {/*</Main>*/}
     </div>
   );
 }

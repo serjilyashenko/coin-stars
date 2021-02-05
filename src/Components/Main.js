@@ -16,7 +16,7 @@ export default function Main() {
 
   return (
     <>
-      <NbCalculator rates={bynData} />
+      <NbCalculator bynData={bynData} />
       <div ref={bynChartContainer}>
         <svg ref={bynChartRef} />
       </div>

@@ -4,16 +4,16 @@ import * as d3 from "d3";
 import queryString from "query-string";
 import { subDays, startOfTomorrow } from "date-fns";
 
-function useCurrencyRequest(bynUrl, deserialize) {
+function useFetchData(url, deserialize) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     (async function () {
-      const response = await axios.get(bynUrl);
+      const response = await axios.get(url);
 
       setData(deserialize(response));
     })();
-  }, [bynUrl, deserialize]);
+  }, [url, deserialize]);
 
   return data;
 }
@@ -35,7 +35,7 @@ export function useBYN() {
     []
   );
 
-  return useCurrencyRequest(bynUrl, deserializeByn);
+  return useFetchData(bynUrl, deserializeByn);
 }
 
 export function useBTC() {
@@ -61,8 +61,8 @@ export function useBTC() {
     []
   );
 
-  const rates = useCurrencyRequest(btcURL, deserializeBtc);
-  const currentRate = useCurrencyRequest(currentBtcURL, deserializeLastBtc);
+  const rates = useFetchData(btcURL, deserializeBtc);
+  const currentRate = useFetchData(currentBtcURL, deserializeLastBtc);
 
   if (!rates || !currentRate) {
     return null;
