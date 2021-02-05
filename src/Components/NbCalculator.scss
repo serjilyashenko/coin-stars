@@ -1,0 +1,20 @@
+.nb-calculator {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 10px 40px;
+
+  table {
+    font-size: 14px;
+
+    td,
+    th {
+      text-align: right;
+    }
+
+    th {
+      color: gray;
+      font-size: 12px;
+    }
+  }
+}

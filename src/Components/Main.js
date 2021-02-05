@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useBYN, useBTC } from "../Hooks/RateFetch";
 import { useRenderLine } from "../Hooks/Render";
+import NbCalculator from "./NbCalculator";
 
 export default function Main() {
   const bynChartContainer = useRef(null);
@@ -15,6 +16,7 @@ export default function Main() {
 
   return (
     <>
+      <NbCalculator rates={bynData} />
       <div ref={bynChartContainer}>
         <svg ref={bynChartRef} />
       </div>
