@@ -21,9 +21,10 @@ function closestDateOfMonthDay(monthDay) {
 }
 
 export default function useNbCalculator(bynData) {
-  const bynDateReversed = useMemo(() => (bynData ? bynData.reverse() : []), [
-    bynData,
-  ]);
+  const bynDateReversed = useMemo(
+    () => (bynData ? [...bynData].reverse() : []),
+    [bynData]
+  );
   const getRateOf = useCallback(
     (date) => bynDateReversed.find((r) => isEqual(date, r.date))?.value,
     [bynDateReversed]
