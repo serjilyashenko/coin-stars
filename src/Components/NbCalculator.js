@@ -4,8 +4,12 @@ import useNbCalculator from "../Hooks/useNbCalculator";
 import NbCalculatorDiffCell from "./NbCalculatorDiffCell";
 import "./NbCalculator.scss";
 
-export default function NbCalculator({ bynData }) {
-  const { rates, prices } = useNbCalculator(bynData);
+export default function NbCalculator() {
+  const { loading, rates, prices } = useNbCalculator();
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <div className="nb-calculator">

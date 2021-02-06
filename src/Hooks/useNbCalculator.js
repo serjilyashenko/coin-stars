@@ -8,23 +8,25 @@ import {
   subMonths,
 } from "date-fns";
 import { NB_PRICE_1, NB_PRICE_2, SELL_CURRENCY_DAY } from "../constants";
+import { useRateFetcher } from "./RateFetcher";
 
 function closestDateOfMonthDay(monthDay) {
   const today = startOfToday();
   const closestDate = setDate(today, monthDay);
 
-  if (!isFuture(closestDate)) {
+  if (isFuture(closestDate)) {
     return subMonths(closestDate, 1);
   }
 
   return closestDate;
 }
 
-export default function useNbCalculator(bynData) {
-  const bynDateReversed = useMemo(
-    () => (bynData ? [...bynData].reverse() : []),
-    [bynData]
-  );
+export default function useNbCalculator() {
+  const { bynData } = useRateFetcher();
+  const { data, loading } = bynData;
+  const bynDateReversed = useMemo(() => (data ? [...data].reverse() : []), [
+    data,
+  ]);
   const getRateOf = useCallback(
     (date) => bynDateReversed.find((r) => isEqual(date, r.date))?.value,
     [bynDateReversed]
@@ -48,14 +50,16 @@ export default function useNbCalculator(bynData) {
       value: getRateOf(tomorrow),
     },
   };
+  const prices = [NB_PRICE_1, NB_PRICE_2].map((price) => ({
+    value: price,
+    last: price * rates.last.value,
+    today: price * rates.today.value,
+    tomorrow: price * rates.tomorrow.value,
+  }));
 
   return {
+    loading,
     rates,
-    prices: [NB_PRICE_1, NB_PRICE_2].map((price) => ({
-      value: price,
-      last: price * rates.last.value,
-      today: price * rates.today.value,
-      tomorrow: price * rates.tomorrow.value,
-    })),
+    prices,
   };
 }

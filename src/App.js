@@ -1,4 +1,7 @@
-import Main from "./Components/Main";
+import NbCalculator from "./Components/NbCalculator";
+import BynChart from "./Components/BynChart";
+import BtcChart from "./Components/BtcChart";
+import { RateFetcherProvider } from "./Hooks/RateFetcher";
 
 export default function App() {
   return (
@@ -6,13 +9,11 @@ export default function App() {
       <header className="app-header">
         <h1>COIN STARS</h1>
       </header>
-      <Main />
-      {/*// Get data (byn + btc), show spinner, error, context*/}
-      {/*<Main>*/}
-      {/*  <NbCalculator />*/}
-      {/*  <BynChart />*/}
-      {/*  <BitcoinChart />*/}
-      {/*</Main>*/}
+      <RateFetcherProvider>
+        <NbCalculator />
+        <BynChart />
+        <BtcChart />
+      </RateFetcherProvider>
     </div>
   );
 }
