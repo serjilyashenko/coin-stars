@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import * as d3 from "d3";
 import { format } from "date-fns";
 
-export function useRenderLineChart(containerRef, svgRef, data) {
+export default function useRenderLineChart(containerRef, svgRef, data) {
   useEffect(() => {
     if (!data) {
       return null;

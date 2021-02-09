@@ -1,7 +1,8 @@
 import { format } from "date-fns";
 import { DATE_FORMAT } from "../constants";
-import useNbCalculator from "../Hooks/useNbCalculator";
+import useNbCalculator from "../Hooks/Containers/useNbCalculator";
 import NbCalculatorDiffCell from "./NbCalculatorDiffCell";
+import { formatToFixed } from "../Utils/Formats";
 import "./NbCalculator.scss";
 
 export default function NbCalculator() {
@@ -22,7 +23,6 @@ export default function NbCalculator() {
               <th />
               <th>Today ({format(rates.today.date, DATE_FORMAT)})</th>
               <th />
-              <th />
               <th>Tomorrow ({format(rates.tomorrow.date, DATE_FORMAT)})</th>
             </tr>
           </thead>
@@ -33,36 +33,36 @@ export default function NbCalculator() {
               <td>
                 <NbCalculatorDiffCell
                   value={rates.today.value - rates.last.value}
+                  fractions={4}
                 />
               </td>
               <td>1$ = {rates.today.value}</td>
               <td>
                 <NbCalculatorDiffCell
                   value={rates.tomorrow.value - rates.last.value}
-                />
-              </td>
-              <td>
-                <NbCalculatorDiffCell
-                  value={rates.tomorrow.value - rates.today.value}
+                  fractions={4}
                 />
               </td>
               <td>1$ = {rates.tomorrow.value}</td>
             </tr>
             {prices.map((item) => (
-              <tr key={item.value}>
-                <td>{item.value}$</td>
-                <td>{item.last}</td>
+              <tr key={item.base}>
+                <td>{formatToFixed(item.base, 1)}$</td>
+                <td>{formatToFixed(item.last, 1)}</td>
                 <td>
-                  <NbCalculatorDiffCell value={item.today - item.last} />
+                  <NbCalculatorDiffCell
+                    value={item.today - item.last}
+                    fractions={1}
+                  />
                 </td>
-                <td>{item.today}</td>
+                <td>{formatToFixed(item.today, 1)}</td>
                 <td>
-                  <NbCalculatorDiffCell value={item.tomorrow - item.last} />
+                  <NbCalculatorDiffCell
+                    value={item.tomorrow - item.last}
+                    fractions={1}
+                  />
                 </td>
-                <td>
-                  <NbCalculatorDiffCell value={item.tomorrow - item.today} />
-                </td>
-                <td>{item.tomorrow}</td>
+                <td>{formatToFixed(item.tomorrow, 1)}</td>
               </tr>
             ))}
           </tbody>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useContext } from "react";
 import {
   isEqual,
   isFuture,
@@ -7,8 +7,8 @@ import {
   startOfTomorrow,
   subMonths,
 } from "date-fns";
-import { NB_PRICE_1, NB_PRICE_2, SELL_CURRENCY_DAY } from "../constants";
-import { useRateFetcher } from "./RateFetcher";
+import { NB_BASE_PRICES, SELL_CURRENCY_DAY } from "../../constants";
+import { RateContext } from "../../Components/RateProvider";
 
 function closestDateOfMonthDay(monthDay) {
   const today = startOfToday();
@@ -21,8 +21,9 @@ function closestDateOfMonthDay(monthDay) {
   return closestDate;
 }
 
+// Container component for useNbCalculator component
 export default function useNbCalculator() {
-  const { bynData } = useRateFetcher();
+  const { bynData } = useContext(RateContext);
   const { data, loading } = bynData;
   const bynDateReversed = useMemo(() => (data ? [...data].reverse() : []), [
     data,
@@ -50,8 +51,9 @@ export default function useNbCalculator() {
       value: getRateOf(tomorrow),
     },
   };
-  const prices = [NB_PRICE_1, NB_PRICE_2].map((price) => ({
-    value: price,
+
+  const prices = NB_BASE_PRICES.map((price) => ({
+    base: price,
     last: price * rates.last.value,
     today: price * rates.today.value,
     tomorrow: price * rates.tomorrow.value,
