@@ -12,9 +12,9 @@ export default function NbCalculatorDiffCell({ value, fractions = 2 }) {
         "nb-calculator-diff-cell_negative": value > 0,
       })}
     >
-      ({value > 0 ? "+" : null}
+      {value > 0 ? "+" : null}
       {value < 0 ? "–" : null}
-      {formatToFixed(absValue, fractions)})
+      {formatToFixed(absValue, fractions)} р.
     </div>
   );
 }
