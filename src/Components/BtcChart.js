@@ -8,7 +8,7 @@ export default function BtcChart() {
   const btcChartContainer = useRef(null);
   const btcChartRef = useRef(null);
 
-  useRenderLineChart(btcChartContainer, btcChartRef, data);
+  useRenderLineChart(btcChartContainer, btcChartRef, data, "USD");
 
   return (
     <div ref={btcChartContainer}>

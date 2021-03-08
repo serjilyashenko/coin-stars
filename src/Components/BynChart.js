@@ -8,7 +8,7 @@ export default function BynChart() {
   const bynChartContainer = useRef(null);
   const bynChartRef = useRef(null);
 
-  useRenderLineChart(bynChartContainer, bynChartRef, data);
+  useRenderLineChart(bynChartContainer, bynChartRef, data, "BYN", 4);
 
   return (
     <div ref={bynChartContainer}>

@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 import * as d3 from "d3";
 import { format } from "date-fns";
+import { formatCurrency } from "../Utils/Formats";
 
-export default function useRenderLineChart(containerRef, svgRef, data) {
+export default function useRenderLineChart(
+  containerRef,
+  svgRef,
+  data,
+  currencyCode,
+  fractions
+) {
   useEffect(() => {
     if (!data) {
       return null;
@@ -81,7 +88,7 @@ export default function useRenderLineChart(containerRef, svgRef, data) {
       .attr("transform", "translate( 4, 11)")
       .attr("font-size", 12)
       .attr("fill", isRise ? "green" : "red")
-      .text(() => lastDataItem.value);
+      .text(() => formatCurrency(lastDataItem.value, currencyCode, fractions));
     labelGroup
       .append("text")
       .attr("font-size", 12)
@@ -111,5 +118,5 @@ export default function useRenderLineChart(containerRef, svgRef, data) {
     resizeObserver.observe(containerElement);
 
     return () => resizeObserver.unobserve(containerElement);
-  }, [containerRef, svgRef, data]);
+  }, [containerRef, svgRef, data, fractions, currencyCode]);
 }

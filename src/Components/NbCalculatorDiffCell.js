@@ -1,8 +1,8 @@
 import classnames from "classnames";
-import { formatToFixed } from "../Utils/Formats";
+import { formatCurrency } from "../Utils/Formats";
 import "./NbCalculatorDiffCell.scss";
 
-export default function NbCalculatorDiffCell({ value, fractions = 2 }) {
+export default function NbCalculatorDiffCell({ value }) {
   const absValue = Math.abs(value);
 
   return (
@@ -14,7 +14,7 @@ export default function NbCalculatorDiffCell({ value, fractions = 2 }) {
     >
       {value > 0 ? "+" : null}
       {value < 0 ? "–" : null}
-      {formatToFixed(absValue, fractions)} р.
+      {formatCurrency(absValue, "BYN")}
     </div>
   );
 }

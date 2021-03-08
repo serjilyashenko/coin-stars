@@ -2,7 +2,7 @@ import { format } from "date-fns";
 import { DATE_FORMAT } from "../constants";
 import useNbCalculator from "../Hooks/Containers/useNbCalculator";
 import NbCalculatorDiffCell from "./NbCalculatorDiffCell";
-import { formatToFixed } from "../Utils/Formats";
+import { formatCurrency } from "../Utils/Formats";
 import "./NbCalculator.scss";
 
 export default function NbCalculator() {
@@ -31,40 +31,49 @@ export default function NbCalculator() {
           <tbody>
             <tr>
               <td />
-              <td>1$ = {rates.last.value} р.</td>
+              <td>
+                {formatCurrency(1, "USD", 0)} ={" "}
+                {formatCurrency(rates.last.value, "BYN", 4)}
+              </td>
               <td className="accent">
                 <NbCalculatorDiffCell
                   value={rates.today.value - rates.last.value}
                   fractions={4}
                 />
               </td>
-              <td className="accent">1$ = {rates.today.value} р.</td>
+              <td className="accent">
+                {formatCurrency(1, "USD", 0)} ={" "}
+                {formatCurrency(rates.today.value, "BYN", 4)}
+              </td>
               <td>
                 <NbCalculatorDiffCell
                   value={rates.tomorrow.value - rates.last.value}
                   fractions={4}
                 />
               </td>
-              <td>1$ = {rates.tomorrow.value} р.</td>
+              <td>
+                {formatCurrency(1, "USD", 0)} ={" "}
+                {formatCurrency(rates.tomorrow.value, "BYN", 4)}
+              </td>
             </tr>
             {prices.map((item) => (
               <tr key={item.base}>
-                <td>{formatToFixed(item.base, 1)}$</td>
-                <td>{formatToFixed(item.last, 1)} р.</td>
+                <td>{formatCurrency(item.base, "USD")}</td>
+                <td>{formatCurrency(item.last, "BYN")}</td>
                 <td className="accent">
                   <NbCalculatorDiffCell
                     value={item.today - item.last}
                     fractions={1}
                   />
                 </td>
-                <td className="accent">{formatToFixed(item.today, 1)} р.</td>
+                <td className="accent">{formatCurrency(item.today, "BYN")}</td>
                 <td>
                   <NbCalculatorDiffCell
                     value={item.tomorrow - item.last}
                     fractions={1}
                   />
                 </td>
-                <td>{formatToFixed(item.tomorrow, 1)} р.</td>
+                <td>{formatCurrency(item.tomorrow, "BYN")}</td>
               </tr>
             ))}
           </tbody>
