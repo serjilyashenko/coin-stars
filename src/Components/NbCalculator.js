@@ -19,7 +19,7 @@ export default function NbCalculator() {
           <thead>
             <tr>
               <th />
-              <th>{format(rates.last.date, DATE_FORMAT)}</th>
+              <th>Sell Day</th>
               <th className="accent" />
               <th className="accent">
                 Today ({format(rates.today.date, DATE_FORMAT)})
@@ -31,26 +31,13 @@ export default function NbCalculator() {
           <tbody>
             <tr>
               <td />
-              <td>
-                {formatCurrency(1, "USD", 0)} ={" "}
-                {formatCurrency(rates.last.value, "BYN", 4)}
-              </td>
-              <td className="accent">
-                <NbCalculatorDiffCell
-                  value={rates.today.value - rates.last.value}
-                  fractions={4}
-                />
-              </td>
+              <td />
+              <td className="accent" />
               <td className="accent">
                 {formatCurrency(1, "USD", 0)} ={" "}
                 {formatCurrency(rates.today.value, "BYN", 4)}
               </td>
-              <td>
-                <NbCalculatorDiffCell
-                  value={rates.tomorrow.value - rates.last.value}
-                  fractions={4}
-                />
-              </td>
+              <td />
               <td>
                 {formatCurrency(1, "USD", 0)} ={" "}
                 {formatCurrency(rates.tomorrow.value, "BYN", 4)}
@@ -59,7 +46,13 @@ export default function NbCalculator() {
             {prices.map((item) => (
               <tr key={item.base}>
                 <td>{formatCurrency(item.base, "USD")}</td>
-                <td>{formatCurrency(item.last, "BYN")}</td>
+                <td>
+                  <div>
+                    {formatCurrency(item.lastRate, "BYN", 4)} (
+                    {format(item.lastDate, DATE_FORMAT)})
+                  </div>
+                  <div>{formatCurrency(item.last, "BYN")}</div>
+                </td>
                 <td className="accent">
                   <NbCalculatorDiffCell
                     value={item.today - item.last}

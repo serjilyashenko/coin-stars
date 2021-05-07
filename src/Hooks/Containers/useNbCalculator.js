@@ -1,14 +1,17 @@
 import { useCallback, useMemo, useContext } from "react";
 import {
+  endOfMonth,
   isEqual,
   isFuture,
   setDate,
+  startOfDay,
   startOfToday,
   startOfTomorrow,
   subMonths,
 } from "date-fns";
-import { NB_BASE_PRICES, SELL_CURRENCY_DAY } from "../../constants";
+import { CONTRACT_1_SELL_DAY } from "../../constants";
 import { RateContext } from "../../Components/RateProvider";
+import { Contract1, Contract2 } from "../../constants";
 
 function closestDateOfMonthDay(monthDay) {
   const today = startOfToday();
@@ -19,6 +22,13 @@ function closestDateOfMonthDay(monthDay) {
   }
 
   return closestDate;
+}
+
+function closestEndOfMonth() {
+  const today = startOfToday();
+  const previousMonthDay = subMonths(today, 1);
+
+  return startOfDay(endOfMonth(previousMonthDay));
 }
 
 // Container component for useNbCalculator component
@@ -33,15 +43,13 @@ export default function useNbCalculator() {
     [bynDateReversed]
   );
 
-  const sellDate = closestDateOfMonthDay(SELL_CURRENCY_DAY);
+  const contract1sellDate = closestDateOfMonthDay(CONTRACT_1_SELL_DAY);
+  const contract2sellDate = closestEndOfMonth();
+
   const today = startOfToday();
   const tomorrow = startOfTomorrow();
 
   const rates = {
-    last: {
-      date: sellDate,
-      value: getRateOf(sellDate),
-    },
     today: {
       date: today,
       value: getRateOf(today),
@@ -52,12 +60,24 @@ export default function useNbCalculator() {
     },
   };
 
-  const prices = NB_BASE_PRICES.map((price) => ({
-    base: price,
-    last: price * rates.last.value,
-    today: price * rates.today.value,
-    tomorrow: price * rates.tomorrow.value,
-  }));
+  const prices = [
+    {
+      base: Contract1,
+      lastDate: contract1sellDate,
+      lastRate: getRateOf(contract1sellDate),
+      last: Contract1 * getRateOf(contract1sellDate),
+      today: Contract1 * rates.today.value,
+      tomorrow: Contract1 * rates.tomorrow.value,
+    },
+    {
+      base: Contract2,
+      lastDate: contract2sellDate,
+      lastRate: getRateOf(contract2sellDate),
+      last: Contract2 * getRateOf(contract2sellDate),
+      today: Contract2 * rates.today.value,
+      tomorrow: Contract2 * rates.tomorrow.value,
+    },
+  ];
 
   return {
     loading,
