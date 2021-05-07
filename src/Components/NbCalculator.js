@@ -14,7 +14,7 @@ export default function NbCalculator() {
 
   return (
     <div className="nb-calculator">
-      <div>
+      <div className="nb-calculator__container">
         <table>
           <thead>
             <tr>

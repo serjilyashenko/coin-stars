@@ -3,6 +3,11 @@
   flex-direction: row;
   justify-content: flex-end;
   padding: 10px 40px;
+  overflow: auto;
+
+  &__container {
+    max-width: 100%;
+  }
 
   table {
     font-size: 14px;
